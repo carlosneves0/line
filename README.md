@@ -125,7 +125,7 @@ make test
 ```
 .
 ├── main.c          # Main source code
-├── Makefile        # Build configuration
+├── makefile        # Build configuration
 ├── test.sh         # Test suite
 ├── README.md       # This file
 └── LICENSE         # License information

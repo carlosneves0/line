@@ -1,5 +1,3 @@
-# Makefile for line - CLI tool to extract lines from files or stdin
-
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -std=c99 -O2
 LDFLAGS =
