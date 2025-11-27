@@ -3,11 +3,9 @@ CFLAGS = -Wall -Wextra -Werror -std=c99 -O2
 LDFLAGS =
 TARGET = line
 SRC = main.c
-PREFIX ?= /usr/local
+PREFIX ?= /usr/local/bin
 
 # Build the executable
-all: $(TARGET)
-
 $(TARGET): $(SRC)
 	$(CC) $(CFLAGS) -o $(TARGET) $(SRC) $(LDFLAGS)
 
@@ -17,8 +15,8 @@ debug: clean $(TARGET)
 
 # Install to system
 install: $(TARGET)
-	install -d $(PREFIX)/bin
-	install -m 755 $(TARGET) $(PREFIX)/bin/
+	install -d $(PREFIX)
+	install -m 755 $(TARGET) $(PREFIX)/
 
 # Uninstall from system
 uninstall:
