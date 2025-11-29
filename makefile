@@ -1,9 +1,11 @@
-CC = gcc
-CFLAGS = -Wall -Wextra -Werror -std=c99 -O2
-LDFLAGS =
-TARGET = line
-SRC = main.c
+CC := gcc
+CFLAGS := -Wall -Wextra -Werror -std=c99 -O3
+LDFLAGS :=
+TARGET := line
+SRC := $(shell find src -type f -name '*.c')
 PREFIX ?= /usr/local/bin
+
+.DEFAULT_GOAL := $(TARGET)
 
 # Build the executable
 $(TARGET): $(SRC)
@@ -16,31 +18,28 @@ debug: clean $(TARGET)
 # Install to system
 install: $(TARGET)
 	install -d $(PREFIX)
-	install -m 755 $(TARGET) $(PREFIX)/
+	install -m 755 $(TARGET) $(PREFIX)
 
 # Uninstall from system
 uninstall:
-	rm -f $(PREFIX)/bin/$(TARGET)
+	rm -f $(PREFIX)/$(TARGET)
 
 # Run tests
 test: $(TARGET)
-	@echo "Running tests..."
-	sh test.sh
+	bash test/main.bash
 
 # Clean build artifacts
 clean:
 	rm -f $(TARGET)
-	rm -rf test_output/
 
 # Format code (requires clang-format)
 format:
 	clang-format -i $(SRC)
 
 # Check for memory leaks (requires valgrind)
-memcheck: $(TARGET)
+valgrind: $(TARGET)
 	@echo "Checking for memory leaks..."
 	valgrind --leak-check=full --error-exitcode=1 ./$(TARGET) 0
 # @echo "first line" | valgrind --leak-check=full --error-exitcode=1 ./$(TARGET) 0 2>&1 | grep -q "ERROR SUMMARY: 0 errors"
 
-.PHONY: all debug install uninstall test clean format memcheck
-
+.PHONY: debug install uninstall test clean format valgrind

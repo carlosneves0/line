@@ -155,4 +155,3 @@ Feel free to submit issues or pull requests!
 ## Author
 
 Built with ❤️ for simple, reliable line extraction.
-
