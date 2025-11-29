@@ -43,3 +43,4 @@ valgrind: $(TARGET)
 # @echo "first line" | valgrind --leak-check=full --error-exitcode=1 ./$(TARGET) 0 2>&1 | grep -q "ERROR SUMMARY: 0 errors"
 
 .PHONY: debug install uninstall test clean format valgrind
+

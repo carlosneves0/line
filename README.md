@@ -6,10 +6,10 @@ A simple, fast CLI tool to extract a specific line from a file or stdin.
 
 - ✅ Extract lines from files or stdin
 - ✅ 1-based line numbering (line 1 is the first line)
-- ✅ Dynamic memory allocation - no line length limits
-- ✅ Comprehensive error handling and validation
-- ✅ Memory-safe with no leaks
-- ✅ Fast and efficient
+- ✅ Simple character-by-character reading - no dynamic memory allocation
+- ✅ Comprehensive error handling with specific exit codes
+- ✅ Memory-safe and efficient
+- ✅ Fast and lightweight
 
 ## Installation
 
@@ -58,24 +58,39 @@ banana
 
 ## Error Handling
 
-The tool provides helpful error messages:
+The tool uses specific exit codes and provides helpful error messages:
+
+**Exit Codes:**
+- `0` (OK): Success
+- `1` (ERR_RUNTIME): Runtime error (file not found, permission denied, etc.)
+- `2` (ERR_ARGV): Invalid arguments
+- `3` (ERR_RANGE): Line number out of range
+- `4` (ERR_TO_DO): Feature not yet implemented
+
+**Examples:**
 
 ```bash
 # Invalid line number
 $ line abc file.txt
-Error: 'abc' is not a valid line number
+# Exit code: 2
 
 # Line doesn't exist
 $ line 100 file.txt
-Error: line 100 not found in 'file.txt' (file has 10 lines)
+# Exit code: 3
 
 # File doesn't exist
 $ line 1 missing.txt
-Error: cannot open 'missing.txt': No such file or directory
+line: missing.txt: No such file or directory
+# Exit code: 1
 
-# Line 0 is invalid (1-based numbering)
+# Line 0 is a no-op (returns success with no output)
 $ line 0 file.txt
-Error: line cannot be zero
+# Exit code: 0
+
+# Negative line numbers (reverse indexing - not yet implemented)
+$ line -1 file.txt
+TO-DO: "reversed" line
+# Exit code: 4
 ```
 
 ## Building
@@ -102,19 +117,20 @@ make test
 make clean
 
 # Check for memory leaks (requires valgrind)
-make memcheck
+make valgrind
 ```
 
 ## Development
 
 ### Running Tests
 
-The project includes a comprehensive test suite with 23 tests covering:
+The project includes a comprehensive test suite covering:
 
 - Basic functionality (reading from files and stdin)
-- Edge cases (empty files, single-line files, long lines)
+- Edge cases (empty files, single-line files, long lines, line 0)
 - Error handling (invalid inputs, missing files, permission errors)
 - Integration with other tools (grep, pipes)
+- Exit code validation
 
 ```bash
 make test
@@ -124,9 +140,13 @@ make test
 
 ```
 .
-├── main.c          # Main source code
+├── src/
+│   ├── main.c      # Main source code
+│   └── int64.h     # Integer parsing utilities
+├── test/
+│   ├── main.bash   # Test suite
+│   └── input/      # Test input files
 ├── makefile        # Build configuration
-├── test.sh         # Test suite
 ├── README.md       # This file
 └── LICENSE         # License information
 ```
@@ -135,14 +155,14 @@ make test
 
 - **Language**: C (C99 standard)
 - **Line numbering**: 1-based (line 1 is the first line)
-- **Memory allocation**: Dynamic with automatic growth
-- **Initial buffer**: 1 KiB
-- **Growth factor**: 2x when buffer is full
-- **Maximum line number**: 2^64-1 (uint64_t)
+- **Memory allocation**: No dynamic allocation - character-by-character reading
+- **Maximum line number**: 2^63-1 (int64_t)
+- **Optimization**: Built with `-O3` for maximum performance
+- **Line length**: Unlimited (no buffer constraints)
 
 ## Performance
 
-The tool uses dynamic memory allocation starting with a 1 KiB buffer that grows as needed, making it efficient for both short and extremely long lines. It reads character-by-character which is simple and reliable for line-by-line processing.
+The tool uses character-by-character reading with no dynamic memory allocation, making it extremely simple, fast, and memory-efficient. It can handle lines of any length without buffer constraints or allocation overhead.
 
 ## License
 
@@ -155,3 +175,4 @@ Feel free to submit issues or pull requests!
 ## Author
 
 Built with ❤️ for simple, reliable line extraction.
+
